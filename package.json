@@ -1,0 +1,21 @@
+{
+  "name": "@agentpki/real-issuer",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "Production-grade AgentPKI issuer reference. Fork this to run your own issuer at your domain. Worker Secret-backed signing key, KV-backed state, HMAC-authenticated /mint endpoint.",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "dev": "wrangler dev",
+    "release": "pnpm --prefix ../sdk-typescript build && wrangler deploy",
+    "gen-keys": "pnpm --prefix ../sdk-typescript tsx examples/gen-demo-key.ts"
+  },
+  "dependencies": {
+    "@agentpki/sdk": "file:../sdk-typescript"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251101.0",
+    "typescript": "^5.7.2",
+    "wrangler": "^3.95.0"
+  }
+}

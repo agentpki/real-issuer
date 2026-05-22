@@ -1,0 +1,56 @@
+name = "agentpki-issuer-edit-me"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+workers_dev = true
+
+# ─── REQUIRED: edit before first deploy ─────────────────────────────────
+#
+# 1. Set [vars] below to your issuer identity.
+# 2. Generate an Ed25519 keypair:
+#       cd ../sdk-typescript && pnpm tsx examples/gen-demo-key.ts
+#    Take the resulting hex strings and:
+#       wrangler secret put ISSUER_PRIVATE_KEY_HEX
+#       (paste the DEMO_PRIVATE_KEY_HEX value)
+# 3. Generate a strong random secret for the internal /mint API:
+#       wrangler secret put INTERNAL_MINT_SECRET
+#       (paste a 32+ char random string; THIS is the bearer your internal
+#        agents will use to call /mint)
+# 4. Create the issuer-state KV namespace:
+#       wrangler kv namespace create ISSUER_STATE
+#    Paste the id below.
+# 5. (Optional) Set up custom domain by uncommenting [[routes]] below.
+# 6. Deploy:
+#       pnpm run release
+# 7. Verify your well-known is serving:
+#       curl https://<your-domain>/.well-known/agentpki-issuer.json
+
+# Uncomment + edit to attach a custom domain (your issuer's hostname).
+# Required if you want your issuer to be discoverable at /.well-known/...
+# under your own domain rather than *.workers.dev.
+#
+# [[routes]]
+# pattern = "your-issuer-domain.com"
+# zone_name = "your-issuer-domain.com"
+# custom_domain = true
+
+# State storage: revoked passports, key rotation history, mint audit log
+[[kv_namespaces]]
+binding = "ISSUER_STATE"
+id = "EDIT-ME-run-wrangler-kv-namespace-create-ISSUER_STATE"
+
+[vars]
+ISSUER_DOMAIN = "your-issuer-domain.com"
+ISSUER_NAME = "Your Company, Inc."
+ISSUER_TIER = "1"
+KID = "your-issuer-2026-q2"
+# Long-lived keys; rotate by issuing a new KID and revoking the old via
+# /admin/revoke-key. valid_from / valid_to defaults below give a 5-year
+# window that you SHOULD shrink in production (90-day rotation recommended).
+KEY_VALID_FROM = "1714521600"
+KEY_VALID_TO   = "1893456000"
+ABUSE_CONTACT_EMAIL    = "abuse@your-issuer-domain.com"
+SECURITY_CONTACT_EMAIL = "security@your-issuer-domain.com"
+
+# Secrets set via wrangler secret put:
+#   ISSUER_PRIVATE_KEY_HEX   — 64 hex chars (32-byte Ed25519 seed)
+#   INTERNAL_MINT_SECRET     — random 32+ char string for /mint auth
