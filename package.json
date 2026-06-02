@@ -7,11 +7,10 @@
   "scripts": {
     "check": "tsc --noEmit",
     "dev": "wrangler dev",
-    "release": "pnpm --prefix ../sdk-typescript build && wrangler deploy",
-    "gen-keys": "pnpm --prefix ../sdk-typescript tsx examples/gen-demo-key.ts"
+    "release": "wrangler deploy"
   },
   "dependencies": {
-    "@agentpki/sdk": "file:../sdk-typescript"
+    "@agentpki/sdk": "^0.1.0-alpha.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251101.0",
