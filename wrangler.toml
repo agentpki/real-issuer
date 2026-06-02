@@ -1,28 +1,36 @@
-name = "agentpki-issuer-edit-me"
+name = "agentpki-issuer"
 main = "src/index.ts"
 compatibility_date = "2026-05-01"
 workers_dev = true
 
 # ─── REQUIRED: edit before first deploy ─────────────────────────────────
 #
-# 1. Set [vars] below to your issuer identity.
-# 2. Generate an Ed25519 keypair:
-#       cd ../sdk-typescript && pnpm tsx examples/gen-demo-key.ts
-#    Take the resulting hex strings and:
-#       wrangler secret put ISSUER_PRIVATE_KEY_HEX
-#       (paste the DEMO_PRIVATE_KEY_HEX value)
-# 3. Generate a strong random secret for the internal /mint API:
-#       wrangler secret put INTERNAL_MINT_SECRET
-#       (paste a 32+ char random string; THIS is the bearer your internal
-#        agents will use to call /mint)
-# 4. Create the issuer-state KV namespace:
-#       wrangler kv namespace create ISSUER_STATE
-#    Paste the id below.
-# 5. (Optional) Set up custom domain by uncommenting [[routes]] below.
-# 6. Deploy:
-#       pnpm run release
-# 7. Verify your well-known is serving:
+# If you registered your issuer at https://dashboard.agentpki.dev, the
+# dashboard's Step 3 walkthrough generated copy-paste blocks for every
+# value below — follow it from there for the easiest path. The full list
+# of changes you need to make to this file:
+#
+# 1. (Optional) Rename `name` above — must be unique within your CF account.
+#    e.g. `name = "agentpki-issuer-acme"`.
+# 2. Replace the `[vars]` block below with the values from the dashboard.
+# 3. Fill in ABUSE_CONTACT_EMAIL and SECURITY_CONTACT_EMAIL with real
+#    inboxes you monitor (defaults are placeholders).
+# 4. Create the issuer-state KV namespace and paste the id below:
+#       npx wrangler kv namespace create ISSUER_STATE
+# 5. Set the two secrets:
+#       echo "<your-hex>" | npx wrangler secret put ISSUER_PRIVATE_KEY_HEX
+#       (the dashboard provides this command pre-filled on the reveal page)
+#       and a random 32+ char string for the internal /mint API:
+#       npx wrangler secret put INTERNAL_MINT_SECRET
+# 6. (Optional) Attach a custom domain — easier to do this via the Cloudflare
+#    dashboard after deploy (Workers & Pages → your Worker → Triggers →
+#    Custom Domains), but you can also uncomment + edit [[routes]] below.
+# 7. Deploy:
+#       npx wrangler deploy
+# 8. Verify your well-known is serving:
 #       curl https://<your-domain>/.well-known/agentpki-issuer.json
+#
+# Full spec: https://agentpki.dev/spec/v0.2
 
 # Uncomment + edit to attach a custom domain (your issuer's hostname).
 # Required if you want your issuer to be discoverable at /.well-known/...
@@ -36,7 +44,7 @@ workers_dev = true
 # State storage: revoked passports, key rotation history, mint audit log
 [[kv_namespaces]]
 binding = "ISSUER_STATE"
-id = "EDIT-ME-run-wrangler-kv-namespace-create-ISSUER_STATE"
+id = "PASTE-KV-NAMESPACE-ID-HERE"
 
 [vars]
 ISSUER_DOMAIN = "your-issuer-domain.com"
